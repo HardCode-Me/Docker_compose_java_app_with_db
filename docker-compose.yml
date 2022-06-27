@@ -1,0 +1,33 @@
+version: '3.1'
+
+services:
+  builder:
+    build: ./build
+    volumes:
+      - temp:/home/App42/target
+      - conf:/home/App42/WebContent
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
+      MYSQL_DATABASE: app_db
+      MYSQL_ROOT_PASSWORD: root
+  web:
+    image: tomcat:7.0
+    ports:
+      - 8083:8080
+    depends_on:
+      - builder
+      - db
+    volumes:
+      - temp:/usr/local/tomcat/webapps
+      - conf:/usr/local/tomcat/ROOT
+
+volumes:
+  db_data:
+  temp:
+  conf:
